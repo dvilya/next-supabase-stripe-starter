@@ -1,14 +1,16 @@
-import Stripe from 'stripe';
+import Stripe from "stripe";
 
-import { getEnvVar } from '@/utils/get-env-var';
+// Use a fallback so build won't crash if env var isn't loaded yet
+const stripeSecretKey = process.env.STRIPE_SECRET_KEY || "sk_test_placeholder_key";
 
-export const stripeAdmin = new Stripe(getEnvVar(process.env.STRIPE_SECRET_KEY, 'STRIPE_SECRET_KEY'), {
-  // https://github.com/stripe/stripe-node#configuration
-  apiVersion: '2023-10-16',
-  // Register this as an official Stripe plugin.
-  // https://stripe.com/docs/building-plugins#setappinfo
+if (stripeSecretKey === "sk_test_placeholder_key") {
+  console.warn("⚠️ STRIPE_SECRET_KEY not found. Using placeholder for build-time safety.");
+}
+
+export const stripeAdmin = new Stripe(stripeSecretKey, {
+  apiVersion: "2023-10-16",
   appInfo: {
-    name: 'UPDATE_THIS_WITH_YOUR_STRIPE_APP_NAME',
-    version: '0.1.0',
+    name: "ResumeAI", // ← replace with your app name
+    version: "0.1.0",
   },
 });
